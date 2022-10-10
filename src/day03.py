@@ -1,6 +1,8 @@
 from math import ceil, sqrt
+from collections.abc import Iterator, Callable, Iterable
+from itertools import product
 
-from generic import get_file
+from generic import get_file, uncurry
 
 
 def layer(n: int) -> int:
@@ -41,8 +43,57 @@ def part_2_oeis(n: int) -> int:
     return next(i for i in nums if i > n)
 
 
+def corner(c: complex) -> bool:
+    return abs(c.real) == abs(c.imag)
+
+
+def indices() -> Iterator[complex]:
+    pos = 0 + 0j
+    delta = 1 + 0j
+    rotation = -1j
+    move = True
+    seen = set()
+    while True:
+        seen.add(pos)
+        yield pos
+
+        if move:
+            pos += delta
+            move = False
+            delta *= rotation
+            seen.add(pos)
+            yield pos
+        if corner(pos):
+            delta *= rotation
+            pos += delta
+            if pos in seen:
+                pos -= delta
+                delta /= rotation
+                move = True
+        else:
+            pos += delta
+
+
+def adj(c: complex) -> list[complex]:
+    deltas = range(-1, 2)
+    square = map(uncurry(complex), product(deltas, repeat=2))
+    return [c + s for s in square]
+
+
 def part2(s: str) -> int:
-    return part_2_oeis(int(s))
+    n = int(s)
+    entries = {0 + 0j: 1}
+    for i in indices():
+        if i in entries:
+            continue
+        res = sum(entries.get(k, 0) for k in adj(i))
+        entries[i] = res
+        if res > n:
+            return res
+
+    assert False
+    # mypy equivalent of rust's unreachable!()
+    # according to https://stackoverflow.com/questions/72175135/mypy-how-to-mark-line-as-unreachable
 
 
 def main():
