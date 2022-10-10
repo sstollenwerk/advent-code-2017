@@ -1,4 +1,7 @@
-from generic import get_file
+from itertools import product
+from operator import ne
+
+from generic import get_file, uncurry
 
 
 grid = list[list[int]]
@@ -9,8 +12,14 @@ def parse(s: str) -> grid:
     return [list(map(int, r.split())) for r in rows]
 
 
-def check_part_1(xs: list[int]):
+def check_part_1(xs: list[int]) -> int:
     return max(xs) - min(xs)
+
+
+def check_part_2(xs: list[int]) -> int:
+    # n = 16, O(n**2) is good enough
+    pairs = map(uncurry(divmod), filter(uncurry(ne), product(xs, repeat=2)))
+    return next(x[0] for x in pairs if x[1] == 0)
 
 
 def part1(s: str) -> int:
@@ -19,7 +28,8 @@ def part1(s: str) -> int:
 
 
 def part2(s: str) -> int:
-    pass
+    vals = parse(s)
+    return sum(map(check_part_2, vals))
 
 
 def main():
