@@ -29,9 +29,9 @@ def ilen(xs: Iterator) -> int:
 
 
 def part1(s: str) -> int:
-    vals = list(s.strip())
+    vals = list(map(int, s.strip()))
     vals.append(vals[0])
-    return ilen(filter(uncurry(eq), pairwise(vals)))
+    return sum(map(lambda x: x[0], filter(uncurry(eq), pairwise(vals))))
 
 
 def part2(s: str) -> int:
