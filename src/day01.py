@@ -35,7 +35,10 @@ def part1(s: str) -> int:
 
 
 def part2(s: str) -> int:
-    pass
+    vals = list(map(int, s.strip()))
+    L = len(vals)
+    pairs = ((vals[i], vals[(i + L // 2) % L]) for i in range(L))
+    return sum(map(lambda x: x[0], filter(uncurry(eq), pairs)))
 
 
 def main():
