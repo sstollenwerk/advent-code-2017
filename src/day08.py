@@ -1,6 +1,8 @@
 from operator import eq, lt, le, ne, ge, gt
 from collections import defaultdict
 from typing import Callable, Iterator
+from functools import reduce
+from itertools import accumulate
 
 from generic import get_file, T
 
@@ -30,23 +32,27 @@ def parse(s: str) -> list[Instruction]:
     return list(map(parse_row, s.strip().split("\n")))
 
 
-def interpret(registers: Registers, commands: list[Instruction]) -> Iterator[Registers]:
-    for (reg1, delta, reg2, comp, to_comp) in commands:
-        if comp(registers[reg2], to_comp):
-            registers[reg1] += delta
-        yield registers
+def interpret_step(r: Registers, command: Instruction) -> Registers:
+    registers = r.copy()
+    (reg1, delta, reg2, comp, to_comp) = command
+    if comp(registers[reg2], to_comp):
+        registers[reg1] += delta
+    return registers
 
 
 def part1(s: str) -> int:
     commands = parse(s)
-    res = list(interpret(defaultdict(int), commands))[-1]
+    res = reduce(interpret_step, commands, defaultdict(int))
     return max(res.values())
     # might actually be 0
 
 
 def part2(s: str) -> int:
     commands = parse(s)
-    posses = (max(i.values()) for i in interpret(defaultdict(int), commands))
+    posses = (
+        max(i.values(), default=0)
+        for i in accumulate(commands, interpret_step, initial=defaultdict(int))
+    )
     return max(posses)
 
 
