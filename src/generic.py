@@ -25,3 +25,7 @@ def uncurry(f: Callable[..., V]) -> Callable[[Iterable[T]], V]:
         return f(*xs)
 
     return inner
+
+
+def ilen(xs: Iterator) -> int:
+    return sum(map(lambda x: 1, xs))
