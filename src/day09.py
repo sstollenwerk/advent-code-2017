@@ -28,12 +28,14 @@ def clean_reg(s: str) -> str:
     # Wasn't sure if that was the case
 
 
-def remove_garbage(s: str) -> str:
+def remove_garbage(s: str) -> tuple[str, int]:
+    total = 0
     while "<" in s:
         a = s.find("<")
         b = s.find(">")
         s = s[:a] + s[b + 1 :]
-    return s
+        total += b - a - 1
+    return s, total
 
 
 def score(xs, current=1):
@@ -41,15 +43,15 @@ def score(xs, current=1):
 
 
 def part1(s: str) -> int:
-    data = remove_garbage(clean_reg(s))
+    data, _ = remove_garbage(clean_reg(s))
     groups = literal_eval(data.replace("{", "[").replace("}", "]").replace("[,", "["))
-    print(groups)
 
     return score(groups)
 
 
 def part2(s: str) -> int:
-    pass
+    _, amt = remove_garbage(clean_reg(s))
+    return amt
 
 
 def main():
