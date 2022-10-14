@@ -15,9 +15,9 @@ def parse(s: str) -> Connections:
 
 
 def connects(conn: Connections, n: Node) -> set[Node]:
-    res = set(n)
+    res = {n}
 
-    currents = set(n)
+    currents = {n}
 
     while currents:
         part = set.union(*(conn[c] for c in currents))
@@ -29,12 +29,20 @@ def connects(conn: Connections, n: Node) -> set[Node]:
 def part1(s: str) -> int:
     cons = parse(s)
     res = connects(cons, "0")
-    print(res)
     return len(res)
 
 
 def part2(s: str) -> int:
-    pass
+    cons = parse(s)
+    to_see = set(cons.keys())
+    groups = []
+    while to_see:
+        a = min(to_see)
+        vals = connects(cons, a)
+        assert a in vals
+        groups.append(vals)
+        to_see -= vals
+    return len(groups)
 
 
 def main():
