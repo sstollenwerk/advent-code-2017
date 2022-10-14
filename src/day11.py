@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 import functools
 from typing import TypeVar
+from functools import reduce
+from itertools import accumulate
 
 from generic import get_file
 
@@ -35,7 +37,8 @@ class Hex:
 
         return dict(zip(dirs, news))
 
-    ##def neighbour(self, d:str) -> Self:
+    def neighbour(self, d: str) -> Self:
+        return self.neigbours[d]
 
     def distance(self: Self, other: Self) -> int:
         vec = Hex(self.q - other.q, self.r - other.r)
@@ -46,20 +49,20 @@ class Hex:
 
 def part1(s: str) -> int:
     start = Hex(0, 0)
-    pos = start
-    for d in s.split(","):
-        pos = pos.neigbours[d]
+    pos = reduce(Hex.neighbour, s.split(","), start)
     return start.distance(pos)
 
 
 def part2(s: str) -> int:
-    pass
+    start = Hex(0, 0)
+    poses = accumulate(s.split(","), Hex.neighbour, initial=start)
+    return max(map(start.distance, poses))
 
 
 def main():
     s = get_file(11).strip()
-    print(f"{part1(s)=}")
-    print(f"{part2(s)=}")
+    print(f"{part1(s)= }")
+    print(f"{part2(s)= }")
 
 
 if __name__ == "__main__":
