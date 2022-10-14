@@ -1,3 +1,5 @@
+from itertools import count
+
 from generic import get_file
 
 
@@ -14,8 +16,12 @@ def hit(time: int, depth: int) -> bool:
     return time % ((depth - 1) * 2) == 0
 
 
-def severity(layers: dict[int, int], time: int):
+def severity(layers: dict[int, int], time: int) -> int:
     return sum(k * v * hit(k + time, v) for k, v in layers.items())
+
+
+def gets_hit(layers: dict[int, int], time: int) -> bool:
+    return any(hit(k + time, v) for k, v in layers.items())
 
 
 def part1(s: str) -> int:
@@ -24,7 +30,9 @@ def part1(s: str) -> int:
 
 
 def part2(s: str) -> int:
-    pass
+    # brute force try
+    layers = parse(s)
+    return next(i for i in count() if gets_hit(layers, i) == 0)
 
 
 def main():
