@@ -7,11 +7,20 @@ def part1(s: str) -> int:
     for i in range(1, 2018):
         p = (vals.index(i - 1) + n) % len(vals) + 1
         vals.insert(p, i)
+        assert vals[0] == 0
     return vals[vals.index(2017) + 1]
 
 
 def part2(s: str) -> int:
-    pass
+    n = int(s)
+    vals = [0]
+    p = 0
+    k = None
+    for i in range(50000000):
+        p = (p + n) % (i+1) + 1
+        if p == 1:
+            k = i+1
+    return k
 
 
 def main():
