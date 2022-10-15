@@ -5,6 +5,7 @@ from functools import wraps
 
 T = TypeVar("T")
 V = TypeVar("V")
+U = TypeVar("U")
 
 
 def get_file(n: int) -> str:
@@ -37,3 +38,7 @@ def flatten(c):
 
 def lines(s: str) -> list[str]:
     return s.split("\n")
+
+
+def map_values(f: Callable[[V], U], d: dict[T, V]) -> dict[T, U]:
+    return {k: f(v) for k, v in d.items()}
