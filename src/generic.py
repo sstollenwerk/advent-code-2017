@@ -33,3 +33,7 @@ def ilen(xs: Iterator) -> int:
 
 def flatten(c):
     return (a for b in c for a in b)
+
+
+def lines(s: str) -> list[str]:
+    return s.split("\n")

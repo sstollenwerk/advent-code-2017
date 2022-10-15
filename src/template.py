@@ -1,6 +1,10 @@
 from generic import get_file
 
 
+def parse(s: str):
+    pass
+
+
 def part1(s: str) -> int:
     pass
 
