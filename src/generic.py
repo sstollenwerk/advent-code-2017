@@ -29,3 +29,7 @@ def uncurry(f: Callable[..., V]) -> Callable[[Iterable[T]], V]:
 
 def ilen(xs: Iterator) -> int:
     return sum(map(lambda x: 1, xs))
+
+
+def flatten(c):
+    return (a for b in c for a in b)
