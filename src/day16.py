@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from string import ascii_lowercase
+from functools import partial
+from collections.abc import Callable
 
-from generic import get_file, lines
+from generic import get_file, T
 
 # Would want to use Rust-style enums
 @dataclass(frozen=True)
@@ -44,9 +46,8 @@ def parse(s: str) -> list[Command]:
     return list(map(parse_row, s.split(",")))
 
 
-def interpret(xs_: list[str], commands: list[Command]) -> list[str]:
+def interpret(commands: list[Command], xs_: list[str]) -> list[str]:
     xs = xs_.copy()
-
     for c in commands:
         if isinstance(c, Partner):
             c = Exchange(xs.index(c.a), xs.index(c.b))
@@ -56,18 +57,38 @@ def interpret(xs_: list[str], commands: list[Command]) -> list[str]:
         elif isinstance(c, Spin):
             k = -1 * c.n
             xs = xs[k:] + xs[:k]
-        assert sorted(xs) == sorted(xs_)
     return xs
 
 
 def part1(s: str) -> str:
     chars = list(ascii_lowercase[:16])
     commands = parse(s)
-    return "".join(interpret(chars, commands))
+    return "".join(interpret(commands, chars))
 
 
-def part2(s: str) -> int:
-    pass
+def step(f: Callable[[T], T], k: T, steps: int) -> T:
+    orig = k
+    for i in range(steps):
+        if i and k == orig:
+            return step(f, k, (steps - i) % i)
+        k = f(k)
+    return k
+
+
+def part2(s: str) -> str:
+    chars = list(ascii_lowercase[:16])
+    commands = parse(s)
+
+    reordered = interpret(commands, chars)
+    b = interpret(commands, reordered)
+
+    re1 = [reordered.index(i) for i in chars]
+    re2 = [b.index(i) for i in reordered]
+    # re1 != re2 . not currect way of doing this
+
+    f = partial(interpret, commands)
+
+    return "".join(step(f, chars, 1000000000))
 
 
 def main():
