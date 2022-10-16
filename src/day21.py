@@ -84,7 +84,21 @@ def part1(s: str) -> int:
 
 
 def part2(s: str) -> int:
-    pass
+    base = """
+.#.
+..#
+###"""
+    start = to_grid(base.strip().replace("\n", "/"))
+
+    print(start)
+
+    maps = parse(s)
+    grid = start
+    for i in range(18):
+        grid = step(maps, grid)
+        print(i)
+
+    return sum(grid.flatten())
 
 
 def main():
