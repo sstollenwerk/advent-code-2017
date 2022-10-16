@@ -1,5 +1,3 @@
-from calendar import c
-from re import A
 from generic import get_file, lines
 
 Position = complex
@@ -21,12 +19,11 @@ def parse(s: str) -> tuple[Position, Places]:
     return start, nodes
 
 
-def adj(p: Position) -> list[Position]:
+def adj(p: Position) -> set[Position]:
     return {p + 1, p - 1, p + 1j, p - 1j}
 
 
-def part1(s: str) -> int:
-    start, nodes = parse(s)
+def traverse(start: Position, nodes: Places) -> tuple[int, list[str]]:
     nexts = nodes.keys() & adj(start)
     assert len(nexts) == 1
     direction = nexts.pop() - start
@@ -35,7 +32,10 @@ def part1(s: str) -> int:
 
     seen = []
 
+    i = 0
+
     while True:
+        i += 1
         assert abs(direction) == 1
         if nodes[current].isalpha():
             seen.append(nodes[current])
@@ -49,11 +49,21 @@ def part1(s: str) -> int:
             direction = d - current
         prev, current = current, d
 
+    return i, seen
+
+
+def part1(s: str) -> str:
+    start, nodes = parse(s)
+
+    _, seen = traverse(start, nodes)
+
     return "".join(seen)
 
 
 def part2(s: str) -> int:
-    pass
+    start, nodes = parse(s)
+    n, _ = traverse(start, nodes)
+    return n
 
 
 def main():
