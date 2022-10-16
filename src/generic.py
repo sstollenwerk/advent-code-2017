@@ -42,3 +42,8 @@ def lines(s: str) -> list[str]:
 
 def map_values(f: Callable[[V], U], d: dict[T, V]) -> dict[T, U]:
     return {k: f(v) for k, v in d.items()}
+
+
+def argmin(xs: list[T]) -> int:
+    indices = list(range(len(xs)))
+    return min(indices, key=xs.__getitem__)

@@ -1,8 +1,12 @@
-from generic import get_file
+from generic import get_file, lines
+
+
+def parse_row(s: str):
+    pass
 
 
 def parse(s: str):
-    pass
+    return list(map(parse_row, lines(s)))
 
 
 def part1(s: str) -> int:
