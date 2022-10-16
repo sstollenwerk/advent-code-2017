@@ -1,10 +1,11 @@
+from collections import Counter
 import numpy as np
 
 # vstack, dstack
 
 # 3x3 becomes 4x4 becomes 6x6 becomes 9x9 becomes
 
-from generic import get_file, lines
+from generic import get_file, lines, flatten
 
 
 Grid = tuple[tuple[bool, ...], ...]
@@ -55,7 +56,7 @@ def subgrids(xs: np.array, size: int):
     return res
 
 
-def step(d: Rule, g: Grid) -> Grid:
+def step(d: Rule, g: Grid) -> np.array:
     if not len(g) % 2:
         size = 2
     else:
@@ -90,15 +91,21 @@ def part2(s: str) -> int:
 ###"""
     start = to_grid(base.strip().replace("\n", "/"))
 
-    print(start)
-
     maps = parse(s)
     grid = start
-    for i in range(18):
-        grid = step(maps, grid)
-        print(i)
+    grids = Counter([grid])
 
-    return sum(grid.flatten())
+    # each 3x3 grid expands in 3 steps into 9 3x3 grids that never interact
+    for i in range(18 // 3):
+        res = Counter()
+        for k, amt in grids.items():
+            for d in range(3):
+                k = step(maps, k)
+            for p in map(from_array, flatten(subgrids(k, 3))):
+                res[p] += amt
+        grids = res
+
+    return sum(sum(np.array(g).flatten()) * v for g, v in grids.items())
 
 
 def main():
