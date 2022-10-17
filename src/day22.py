@@ -1,8 +1,11 @@
+from collections import defaultdict
+
+
 from generic import get_file, lines
 
 UP = -1j
-LEFT = 1j
-RIGHT = -1j
+LEFT = -1j
+RIGHT = 1j
 
 Positions = set[complex]
 
@@ -40,8 +43,8 @@ def display(xs: Positions):
     print("\n".join(res))
 
 
-def steps(start: complex, nodes: Positions, steps: int):
-    deltas = [LEFT, RIGHT]
+def steps(start: complex, nodes: Positions, steps: int) -> int:
+    deltas = [RIGHT, LEFT]
     direction = UP
 
     position = start
@@ -63,8 +66,30 @@ def part1(s: str) -> int:
     return steps(centre, nodes, 10000)
 
 
+def steps2(start: complex, nodes: defaultdict[complex, int], steps: int) -> int:
+    deltas = [LEFT, 1, RIGHT, -1]
+    direction = UP
+
+    position = start
+
+    times = 0
+    for _ in range(steps):
+        k = nodes[position]
+        times += nodes[position] == 1
+        nodes[position] += 1
+        nodes[position] %= 4
+        direction *= deltas[k]
+        position += direction
+    return times
+
+
 def part2(s: str) -> int:
-    pass
+    clean, weakened, infected, flagged = range(4)
+
+    centre, nodes_ = parse(s)
+    nodes = defaultdict(int, {k: 2 for k in nodes_})
+
+    return steps2(centre, nodes, 10000000)
 
 
 def main():
