@@ -1,8 +1,10 @@
 from functools import cache
+from typing import Callable
 
 from generic import get_file, lines
 
 Component = tuple[int, int]
+Ord = int  # incorrect
 
 
 def parse_row(s: str) -> Component:
@@ -18,27 +20,35 @@ def score(xs: list[Component]) -> int:
 
 
 @cache
-def bridge(start: int, components: frozenset[Component]) -> list[Component]:
+def bridge(
+    start: int,
+    components: frozenset[Component],
+    sc: Callable[[list[Component]], Ord],
+) -> list[Component]:
     comps = [i for i in components if start in i]
 
     posses: list[list[Component]] = [[]]
     for c in comps:
         next_ = c[1] if c[0] == start else c[0]
-        res = bridge(next_, components - {c})
+        res = bridge(next_, components - {c}, sc)
         posses.append([c] + res)
-    return max(posses, key=score)
+    return max(posses, key=sc)
 
 
 def part1(s: str) -> int:
     posses = parse(s)
     assert len(posses) == len(set(posses))
-    print(posses)
 
-    return score(bridge(0, frozenset(posses)))
+    return score(bridge(0, frozenset(posses), score))
 
 
 def part2(s: str) -> int:
-    pass
+    posses = parse(s)
+    assert len(posses) == len(set(posses))
+
+    sc = lambda x: (len(x), score(x))
+
+    return score(bridge(0, frozenset(posses), sc))
 
 
 def main():
