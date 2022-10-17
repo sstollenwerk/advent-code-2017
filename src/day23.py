@@ -1,9 +1,10 @@
 from collections import Counter, defaultdict, deque
 from dataclasses import dataclass, asdict
+import itertools
 from copy import deepcopy
 
 
-from generic import get_file, lines, map_values
+from generic import get_file, ilen, lines, map_values
 
 Reg = str
 Val = Reg | int
@@ -84,17 +85,30 @@ def interpret_part1(registers: defaultdict[str, int], commands: list[Inst]):
 
         else:
             assert False
-    return seen
+    return seen, registers
 
 
 def part1(s: str) -> int:
     instructions = parse(s)
     registers = defaultdict(int)
-    return interpret_part1(registers, instructions)[Mul]
+    amts, regs = interpret_part1(registers, instructions)
+    print(regs)
+    return amts[Mul]
+
+
+def is_not_prime(n: int) -> bool:
+    for i in itertools.count(start=2):
+        if not n % i:
+            return True
+        if i**2 > n:
+            break
+    return False
 
 
 def part2(s: str) -> int:
-    pass
+    instructions = parse(s)
+    # magic nmbers from reading code
+    return ilen(filter(is_not_prime, range(105700, 122700 + 17, 17)))
 
 
 def main():
