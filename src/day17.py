@@ -17,9 +17,9 @@ def part2(s: str) -> int:
     p = 0
     k = None
     for i in range(50000000):
-        p = (p + n) % (i+1) + 1
+        p = (p + n) % (i + 1) + 1
         if p == 1:
-            k = i+1
+            k = i + 1
     return k
 
 

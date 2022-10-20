@@ -32,13 +32,13 @@ def iterate(k: T, f: Callable[[T], T]) -> Iterator[T]:
 
 
 def loop_len(xs: Iterator[T]) -> int:
-    a,b_ = tee(xs, 2)
+    a, b_ = tee(xs, 2)
     b = islice(b_, 0, None, 2)
-    pairs = zip(a,b)
-    posses = (i for i,el in enumerate(pairs) if uncurry(eq)(el) )
+    pairs = zip(a, b)
+    posses = (i for i, el in enumerate(pairs) if uncurry(eq)(el))
     next(posses)
-    x,y = next(posses), next(posses)
-    return y-x
+    x, y = next(posses), next(posses)
+    return y - x
 
 
 def part1(s: str) -> int:
@@ -51,9 +51,11 @@ def part1(s: str) -> int:
         data.add(el)
     assert False
 
+
 def part2_functional(s: str) -> int:
     banks = tuple(map(int, s.strip().split()))
     return loop_len(iterate(banks, step))
+
 
 def part2_imperative(s: str) -> int:
 
@@ -66,13 +68,12 @@ def part2_imperative(s: str) -> int:
         data[el] = i
     assert False
 
+
 def part2(s: str) -> int:
     a = part2_functional(s)
     b = part2_imperative(s)
     assert a == b
     return a
-
-    
 
 
 def main():
